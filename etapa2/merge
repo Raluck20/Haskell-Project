@@ -1,0 +1,111 @@
+{-MERG 12 TESTE
+mergeTrees :: Ord p => [BinomialTree p k] -> [BinomialTree p k] -> [BinomialTree p k]
+mergeTrees [] ts = ts
+mergeTrees ts [] = ts
+mergeTrees ts1@(t1:ts1') ts2@(t2:ts2')
+  | rank t1 < rank t2 = t1 : mergeTrees ts1' ts2
+  | rank t2 < rank t1 = t2 : mergeTrees ts1 ts2'
+  | otherwise = zipExtend (attach t1 t2) ts1' ts2'
+  where
+    zipExtend x xs ys = x : mergeTrees xs ys-}
+
+{-- MERG 7 TESTE
+mergeTrees :: Ord p => [BinomialTree p k] -> [BinomialTree p k] -> [BinomialTree p k]
+mergeTrees [] bs = bs
+mergeTrees as [] = as
+mergeTrees (a:as) (b:bs)
+    | rank a < rank b = a : mergeTrees as (b:bs)
+    | rank b < rank a = b : mergeTrees (a:as) bs
+    | otherwise       = mergePairs a b (mergeTrees as bs)
+
+mergePairs :: Ord p => BinomialTree p k -> BinomialTree p k -> [BinomialTree p k] -> [BinomialTree p k]
+mergePairs a b [] = [link a b]
+mergePairs a b (c:cs)
+    | rank a < rank b = a : mergePairs b c cs
+    | rank b < rank c = b : mergePairs a c cs
+    | otherwise       = mergePairs (link a b) c cs
+
+link :: Ord p => BinomialTree p k -> BinomialTree p k -> BinomialTree p k
+link a@(Node pa ka as) b@(Node pb kb bs)
+    | pa < pb   = Node pa ka (b:as)
+    | otherwise = Node pb kb (a:bs)-}
+
+{-tot12
+mergeTrees :: Ord p => [BinomialTree p k] -> [BinomialTree p k] -> [BinomialTree p k]
+mergeTrees [] ts = ts
+mergeTrees ts [] = ts
+mergeTrees ts1@(t1:ts1') ts2@(t2:ts2')
+  | rank t1 < rank t2 = t1 : mergeTrees ts1' ts2
+  | rank t2 < rank t1 = t2 : mergeTrees ts1 ts2'
+  | otherwise = zipExtend (attach t1 t2) ts1' ts2'
+  where
+    zipExtend x [] [] = [x]
+    zipExtend x xs [] = x : xs
+    zipExtend x [] ys = x : ys
+    zipExtend x xs ys = mergeTrees (x:xs) ys-}
+
+{- 14 teste
+mergeTrees :: Ord p => [BinomialTree p k] -> [BinomialTree p k] -> [BinomialTree p k]
+mergeTrees [] bs = bs
+mergeTrees as [] = as
+mergeTrees (a:as) (b:bs) =
+  case compare (rank a) (rank b) of
+    LT -> a : mergeTrees as (b:bs)
+    GT -> b : mergeTrees (a:as) bs
+    EQ -> insertTree (attach a b) $ mergeTrees as bs
+  where
+    insertTree t ts = case ts of
+      [] -> [t]
+      (t':ts') -> if rank t < rank t' then t : ts else insertTree (attach t' t) ts'-}
+
+{- 12 teste
+mergeTrees :: Ord p => [BinomialTree p k] -> [BinomialTree p k] -> [BinomialTree p k]
+mergeTrees [] ts = ts
+mergeTrees ts [] = ts
+mergeTrees ts1@(t1:ts1') ts2@(t2:ts2') =
+  case compare (rank t1) (rank t2) of
+    LT -> t1 : mergeTrees ts1' ts2
+    GT -> t2 : mergeTrees ts1 ts2'
+    EQ -> insertTree (attach t1 t2) (mergeTrees ts1' ts2')
+      -- In cazul in care avem doi arbori cu acelasi rang,
+      -- ii atasam si combinam recursiv arborii ramasi 
+
+
+      12teste
+mergeTrees :: Ord p => [BinomialTree p k] -> [BinomialTree p k] -> [BinomialTree p k]
+mergeTrees [] ts2 = ts2
+mergeTrees ts1 [] = ts1
+mergeTrees ts1@(t1:ts1') ts2@(t2:ts2')
+  | rank t1 < rank t2 = t1 : mergeTrees ts1' ts2
+  | rank t2 < rank t1 = t2 : mergeTrees ts1 ts2'
+  | otherwise = insertTree (attach t1 t2) $ mergeTrees ts1' ts2'
+
+-}
+
+
+--ASTA!
+mergeTrees :: Ord p => [BinomialTree p k] -> [BinomialTree p k] -> [BinomialTree p k]
+mergeTrees [] bs = bs
+mergeTrees as [] = as
+mergeTrees (a:as) (b:bs)
+  | rank a < rank b = a : mergeTrees as (b:bs)
+  | rank b < rank a = b : mergeTrees (a:as) bs
+  | otherwise       = insertTree (attach a b) $ mergeTrees as bs
+
+
+
+
+
+
+  {-mergeTrees :: Ord p => [BinomialTree p k] -> [BinomialTree p k] -> [BinomialTree p k]
+mergeTrees [] bs = bs
+mergeTrees as [] = as
+mergeTrees (a:as) (b:bs) =
+  case compare (rank a) (rank b) of
+    LT -> a : mergeTrees as (b:bs)
+    GT -> b : mergeTrees (a:as) bs
+    EQ -> insTree (attach a b) $ mergeTrees as bs
+  where
+    insTree t ts = case ts of
+      [] -> [t]
+      (t':ts') -> if rank t < rank t' then t : ts else insTree (attach t' t) ts'-}
